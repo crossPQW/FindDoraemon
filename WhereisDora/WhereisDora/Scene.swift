@@ -69,6 +69,25 @@ class Scene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
         
+        let location = touch.location(in: self)
+        let hittedDora = nodes(at: location)
+        
+        if let dora = hittedDora.first {
+            doraRemains -= 1;
+            
+            let scaleOut = SKAction.scale(by: 2, duration: 0.2)
+            let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+            let group = SKAction.group([scaleOut,fadeOut])
+            let sequence = SKAction.sequence([group,SKAction.removeFromParent()])
+            
+            dora.run(sequence)
+            
+            if doraRemains == 0 && doraCreated == 10 {
+                remainingDoraNode.removeFromParent()
+                addChild(SKSpriteNode(imageNamed: "game_over"))
+            }
+        }
     }
 }
